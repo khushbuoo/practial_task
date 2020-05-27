@@ -29,8 +29,12 @@ module.exports.addproduct = async (req, res) => {
           "price": req.body.price,
           "userId":req.user._id,
         };
-      product = await save(productDetails);
+     const product = await save(productDetails);
+     if(product){
       handleResponse({ res,msg:'Product addded Successfully', data: product });
+     }else{
+      return handleError({ res, err });
+     }
     } catch (err) {
       return handleError({ res, err });
     }
@@ -38,12 +42,16 @@ module.exports.addproduct = async (req, res) => {
   module.exports.getproduct = async (req,res,next) => {
     try {
       const products = await fetchproduct();
-      handleResponse({
-        res,
-        statusCode: 200,
-        msg: 'Your fetch data successully',
-        data:products,
-      });
+      if(products){
+        handleResponse({
+          res,
+          statusCode: 200,
+          msg: 'Your fetch data successully',
+          data:products,
+        });
+      }else{
+        return handleError({ res, err });
+      }
       } catch (err) {
       handleError({ res, err });
     }
